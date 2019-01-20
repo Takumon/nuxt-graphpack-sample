@@ -31,6 +31,6 @@ npm i
 npm run dev
 ```
 
-* Finaly, You can access htttp:localhost:3000 from the browser!
+* Finally, You can access htttp:localhost:3000 from the browser!
 
 
