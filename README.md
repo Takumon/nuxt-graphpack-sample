@@ -1,7 +1,7 @@
 # nuxt-graphpack-sample
 フロントに **[Nuxt.js](https://ja.nuxtjs.org/)**、バックエンドに **[Graphpack](https://github.com/glennreyes/graphpack)**を使った**GraphQLのサンプルアプリケーション**です。
 ユーザー情報の操作を通して、Query, Mutation, Subscriptionの使い方を紹介しています。
-バックエンドは、AppSyncなどのサービスを使うわけでななく、ローカルで完結するものになっています。
+バックエンドは、AppSyncなどのサービスを使うわけでなはなく、ローカルで完結するものになっています。
 データは仮で用意しているのでDB構築なども必要ありません。
 本リポジトリをクローンしていただいて、[Getting Start](#getting-start)の手順を実施するとサンプルアプリをブラウザから動かすことができます。
 
