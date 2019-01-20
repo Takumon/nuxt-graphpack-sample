@@ -1,0 +1,23 @@
+{
+  "name": "graphpack-sample",
+  "version": "0.1.0",
+  "description": "graphqpack sample",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "graphpack",
+    "build": "graphpack build",
+    "start": "node ./build/index.js"
+  },
+  "keywords": [
+    "graphpack"
+  ],
+  "author": "Takumon",
+  "license": "MIT",
+  "devDependencies": {
+    "graphpack": "^1.0.6"
+  },
+  "dependencies": {
+    "validator": "^10.11.0"
+  }
+}
