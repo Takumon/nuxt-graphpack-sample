@@ -124,7 +124,6 @@ export default {
         {
           document: userDeletedGql,
           updateQuery: (prev, { subscriptionData }) => {
-            console.log('fdasfadfadfad')
             if (!subscriptionData.data) {
               return prev;
             }
@@ -204,8 +203,6 @@ export default {
       if (error) {
         console.log(error);
       }
-
-      this.close()
     },
     editItem(item) {
       this.editedIndex = this.users.indexOf(item)
@@ -219,7 +216,7 @@ export default {
         this.editedIndex = -1
       }, 300)
     },
-    async save() {
+    save() {
       if (this.editedIndex > -1) {
         this.updateItem(this.editedItem)
       } else {
