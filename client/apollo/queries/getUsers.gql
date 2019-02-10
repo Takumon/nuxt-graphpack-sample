@@ -1,8 +1,8 @@
 query GetUsers {
-  users {
-    id
-    name
-    email
-    age
-  }
+    users {
+        id
+        name
+        email
+        age
+    }
 }
