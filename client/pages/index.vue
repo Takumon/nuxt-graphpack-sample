@@ -1,45 +1,46 @@
 <template>
-  <table>
-    <tr>
-      <th>ID</th> 
-      <th>名前</th> 
-      <th>メール</th> 
-      <th>年齢</th>
-      <th>-</th>
-    </tr>
+  <div>
+    <button @click="isShowEditArea = true">新規登録</button>
 
-    <tr v-for="user in users" :key="user.id">
-      <template v-if="user.editable">
-        <td>{{user.id}}</td>
-        <td><input type="text" v-model="user.name"></td>
-        <td><input type="email" v-model="user.email"></td>
-        <td><input type="number" v-model="user.age"></td>
-        <td>
-          <button @click="updateUser(user)">編集完了</button>
-          <button @click="deleteUser(user.id)">削除</button>
-        </td>
-      </template>
-      <template v-else>
-        <td>{{user.id}}</td>
-        <td>{{user.name}}</td>
-        <td>{{user.email}}</td>
-        <td>{{user.age}}</td>
-        <td>
-          <button @click="chengeEditMode(user)">編集</button>
-        </td>
-      </template>
-    </tr>
+    <table>
+      <tr>
+        <th>ID</th> 
+        <th>名前</th> 
+        <th>メール</th> 
+        <th>年齢</th>
+        <th>-</th>
+      </tr>
 
-    <tr>
-      <td></td>
-      <td><input type="text" v-model="newUser.name" placeholder="名前"></td>
-      <td><input type="email" v-model="newUser.email" placeholder="メール"></td>
-      <td><input type="number" v-model="newUser.age" placeholder="年齢"></td>
-      <td>
-        <button @click="createUser(newUser)">登録</button>
-      </td>
-    </tr>
-  </table>
+      <tr v-for="item in users" :key="item.id">
+        <td>{{item.id}}</td>
+        <td>{{item.name}}</td>
+        <td>{{item.email}}</td>
+        <td>{{item.age}}</td>
+        <td>
+          <button @click="editItem(item)">編集</button>
+          <button @click="deleteItem(item)">削除</button>
+        </td>
+      </tr>
+    </table>
+
+    <div v-if="isShowEditArea">
+      <h2>{{ formTitle }}</h2>
+      <div>
+        <input type="text" v-model="editedItem.name" placeholder="名前">
+      </div>
+      <div>
+        <input type="email" v-model="editedItem.email" placeholder="メール">
+      </div>
+      <div>
+        <input type="number" v-model="editedItem.age" placeholder="年齢">
+      </div>
+      <div>
+        <button @click="close">キャンセル</button>
+        <button @click="save">保存</button>
+      </div>
+    </div>
+
+  </div>
 </template>
 
 <script>
@@ -59,7 +60,26 @@ export default {
         name: null,
         email: null,
         age: null,
+      },
+      isShowEditArea: false,
+      editedIndex: -1,
+      editedItem: {
+        id: null,
+        name: null,
+        email: null,
+        age: null,
+      },
+      defaultEditedItem: {
+        id: null,
+        name: null,
+        email: null,
+        age: null,
       }
+    }
+  },
+  computed: {
+    formTitle() {
+        return this.editedIndex === -1 ? 'ユーザー新規登録' : 'ユーザー更新'
     }
   },
   apollo: {
@@ -97,7 +117,6 @@ export default {
         {
           document: userDeletedGql,
           updateQuery: (prev, { subscriptionData }) => {
-            console.log('fdasfadfadfad')
             if (!subscriptionData.data) {
               return prev;
             }
@@ -116,7 +135,7 @@ export default {
     }
   },
   methods: {
-    async createUser({name, email, age}) {
+    async createItem({name, email, age}) {
 
       const { data, error } = await this.$apollo.mutate({
         mutation: createUserGql,
@@ -131,25 +150,19 @@ export default {
 
       if (error) {
         console.log(error);
-        return;
       }
 
-      this.$apollo.queries.users.refresh()
-
-      // 入力フォーム初期化
-      this.newUser.name = null;
-      this.newUser.email = null;
-      this.newUser.age = null;
+      this.close();
     },
-    async updateUser(user) {
+    async updateItem({ id, name, email, age }) {
 
       const { data, error } = await this.$apollo.mutate({
         mutation: updateUserGql,
         variables: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          age: user.age,
+          id,
+          name,
+          email,
+          age,
         },
         // refetchQueriesは削除します
         // refetchQueriesの代わりにSubscriptionでユーザー情報を更新するためです
@@ -157,18 +170,20 @@ export default {
 
       if (error) {
         console.log(error);
-        return;
       }
 
-      // 編集を終了
-      this.chengeEditMode(user);
+      this.close();
     },
-    async deleteUser(id) {
+    async deleteItem(item) {
+      const index = this.users.indexOf(item)
+      if (!confirm(`ユーザー(${item.name})を削除しますか?`)) {
+        return
+      }
 
       const { data, error } = await this.$apollo.mutate({
         mutation: deleteUserGql,
         variables: {
-          id
+          id: item.id,
         },
         // refetchQueriesは削除します
         // refetchQueriesの代わりにSubscriptionでユーザー情報を更新するためです
@@ -176,19 +191,26 @@ export default {
 
       if (error) {
         console.log(error);
-        return;
       }
     },
-    chengeEditMode(user) {
-      const i = this.users.findIndex(u => u.id == user.id)
-      if (i === -1 ) {
-        throw new Error('該当するユーザは存在しません');
+    editItem(item) {
+      this.editedIndex = this.users.indexOf(item)
+      this.editedItem = Object.assign({}, item)
+      this.isShowEditArea = true
+    },
+    close() {
+      this.isShowEditArea = false
+      setTimeout(() => {
+        this.editedItem = Object.assign({}, this.defaultEditedItem)
+        this.editedIndex = -1
+      }, 300)
+    },
+    save() {
+      if (this.editedIndex > -1) {
+        this.updateItem(this.editedItem)
+      } else {
+        this.createItem(this.editedItem)
       }
-
-      this.$set(this.users, i, {
-        ...user,
-        editable: !user.editable
-      });
     }
   }
 }
