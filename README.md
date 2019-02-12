@@ -5,8 +5,17 @@
 データは仮で用意しているのでDB構築なども必要ありません。
 本リポジトリをクローンしていただいて、[Getting Start](#getting-start)の手順を実施するとサンプルアプリをブラウザから動かすことができます。
 
+## フォルダ構成 
+* [client](./client)
+  * Nuxt.js＋Apollo Clientで実装したクライアントサイドのGraphQLアプリケーションです。
+* [client_vuetify](./client_vuetify)
+  * [client](./client)の見た目をVuetifyで綺麗にした版です。
+* [server](./server)
+  * Graphpackを使って実装したサーバーサイドのGraphQLアプリケーションです。
 
-なおコチラのソースコードの詳細は、以下でも紹介しています。
+## 参考記事
+コチラのソースコードの詳細は、以下でも紹介しています。あわせてご覧ください。
+* [Nuxt.js＋Apollo ClientでCRUD操作 / ユーザー管理画面でQuery, Mutation, Subscriptionを実装](https://takumon.com/nuxt-apollo-with-graphpack)
 * [設定いらずのNode製GraphQLサーバー「Graphpack」の使い方 / Query, Mutation, Subscriptionを試す](https://takumon.com/graphpack-graphql-zero-config-server)
 
 
